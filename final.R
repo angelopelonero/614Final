@@ -9,7 +9,7 @@ data2
 # set a seed to fix the random number generator and make your split reproducable (300 is a random choice)
 set.seed(300)
 
-# convert nominal vcalues to numerical values
+# convert nominal values to numerical values
 # source: https://stackoverflow.com/questions/47922184/convert-categorical-variables-to-numeric-in-r
 
 
