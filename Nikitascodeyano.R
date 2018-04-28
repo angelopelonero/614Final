@@ -48,7 +48,7 @@ test  <- data[-trainIndex, ]
 
 ##Bootstrapping the weight column 
 ##Cross validation 
-##SVM 
+##SVM
 
 train$med_range <- as.factor(train$med_range)
 summary(train)

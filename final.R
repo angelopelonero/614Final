@@ -29,6 +29,7 @@ test <- subset(data1, data2$spl == FALSE)
 test
 train
 
+
 # let's plot some data to run regression on:
 plot(data2$number_diagnoses, data2$diabetesMed)
 
