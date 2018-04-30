@@ -48,6 +48,8 @@ converted <-sapply(data[,to_convert],unclass)    # data.frame of all categorical
 data <- cbind(data[,!to_convert],converted)        # complete data.frame with all variables put together
 data <- na.omit(data)
 
+nrow(data)
+
 trainIndex <- createDataPartition(data$med_range, p = .8, list = FALSE, times = 1)
 train <- data[trainIndex, ]
 test  <- data[-trainIndex, ]

@@ -22,14 +22,15 @@ colnames(data3)
 data3 <- data3[ ,-nearZeroVar(data3)] # finds and removes near-zero variance columns from data
 colnames(data3)
 
-# find and drop NA-containing rows
-# revisit this if ML predictions are off - may wish to impute instead
+# find and drop NA-containing rows - this doesn't drop any rows according to nrow()
 #require(DataCombine)
 #DropNA(data3, message = TRUE)
-data3 <- na.omit(data3)
+
+#the following drops a TON of rows - going to try using it only in the PCA call and leave it for the rest
+#data3 <- na.omit(data3)
 
 nrow(data2)
-nrow(data3) #crap, this is not a good way to deal with NAs
+nrow(data3)
 
 # the variable "data3" now has entirely numerical values, no zero-cvariance colums, and no NA values (recall: removed NA rows)
 # this data is now ready for PCA, but first we split into train/test sets
@@ -45,7 +46,7 @@ colnames(train)
 # Therefore PCA will be used to determine important ML features
 # Pair-plotting and guesswork may be too cumbersome in this instance
 
-prin_comp <- prcomp(train) # throws error if NAs in data: Error in svd(x, nu = 0, nv = k) : infinite or missing values in 'x'
+prin_comp <- prcomp(na.omit(train), center = TRUE, scale = TRUE) # throws error if NAs in data: Error in svd(x, nu = 0, nv = k) : infinite or missing values in 'x'
 names(prin_comp)
 biplot(prin_comp)
 plot(prin_comp)
