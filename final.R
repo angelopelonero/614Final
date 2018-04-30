@@ -1,7 +1,6 @@
 ### read in data, gets rid of NAs (in this data, an NA is noted by "?")
 setwd("~/Documents/USF/HS614/DiabData")
 
-help("read.csv")
 data1 <- read.csv("diabetic_data.csv", na.strings = "?")
 data2 <- data1
 colnames(data2)
@@ -10,19 +9,26 @@ colnames(data2)
 set.seed(300)
 
 ### the following would drop a TON of rows if we drop NAs, so we're removing it now
-data3$weight <- NULL
+data2$weight <- NULL
 
 ### NOTE: TRY BOOTSTRAPPING payer_code and medical_specialty
 
+### onehot encoding -what it do?
+
+#require(onehot)
+#onehot(data2)
+
 ### convert nominal values to numerical values
-### should this be done with hot encoding or something?
+### replaceable with onehot encoding or something?
 ### source: https://stackoverflow.com/questions/47922184/convert-categorical-variables-to-numeric-in-r
+
 to_convert <- sapply(data2,is.factor)       # logical vector telling if a variable needs to be displayed as numeric
 converted <-sapply(data2[,to_convert],unclass)    # data.frame of all categorical variables now displayed as numeric
 data3 <- cbind(data2[,!to_convert],converted)        # complete data.frame with all variables put together
 colnames(data3)
 
 ### find and drop zero-variance columns
+### this oblates the entire dataframe if it's not converted to numeric values
 
 data3 <- data3[ ,-nearZeroVar(data3)]
 colnames(data3)
@@ -42,22 +48,24 @@ library(caret)
 data4 <- createDataPartition(data3$readmitted, p = .8, list = FALSE, times = 1)
 train <- data3[data4, ]
 test  <- data3[-data4, ]
-colnames(train)
 
 ### There's a large number of features in this data
 ### Therefore PCA will be used to determine important ML features
 ### Pair-plotting and guesswork may be too cumbersome in this instance
 
-prin_comp <- prcomp(na.omit(train), center = TRUE, scale = TRUE) # throws error if NAs in data: Error in svd(x, nu = 0, nv = k) : infinite or missing values in 'x'
+prin_comp <- prcomp(na.omit(train), center = TRUE, scale = TRUE)
+names(prin_comp)
+
+### plotting PCA:
+
 library(devtools); library(ggfortify); library(ggplot2)
 autoplot(prcomp(na.omit(train), center = TRUE, scale = TRUE), colour = 'readmitted')
 autoplot(prcomp(na.omit(train)), colour = 'readmitted', loadings = TRUE)
-names(prin_comp)
 biplot(prin_comp)
 plot(prin_comp)
 
 ### from the documentation, we know that weight, payer_code, and medical_specialty have large amounts of missing data
-### those columns will be removed here as none were shown to be important in PCA
+### those columns may be removed here if they were shown to be unimportant via PCA
 
 ### svm on whole dataset to predict "readmit"
 library("e1071")
