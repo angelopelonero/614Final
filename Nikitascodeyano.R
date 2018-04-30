@@ -103,6 +103,7 @@ a
 plot(3:15,a)
 
 
+# Angelo added:
 #here's PCA just haphasardly done before a split - just want to see it running.
 
 
