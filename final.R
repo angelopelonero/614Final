@@ -24,8 +24,12 @@ colnames(data3)
 
 # find and drop NA-containing rows
 # revisit this if ML predictions are off - may wish to impute instead
-require(DataCombine)
-DropNA(data3, message = TRUE)
+#require(DataCombine)
+#DropNA(data3, message = TRUE)
+data3 <- na.omit(data3)
+
+nrow(data2)
+nrow(data3) #crap, this is not a good way to deal with NAs
 
 # the variable "data3" now has entirely numerical values, no zero-cvariance colums, and no NA values (recall: removed NA rows)
 # this data is now ready for PCA, but first we split into train/test sets
@@ -41,28 +45,22 @@ colnames(train)
 # Therefore PCA will be used to determine important ML features
 # Pair-plotting and guesswork may be too cumbersome in this instance
 
-prin_comp <- prcomp(train) # throws error: Error in svd(x, nu = 0, nv = k) : infinite or missing values in 'x'
+prin_comp <- prcomp(train) # throws error if NAs in data: Error in svd(x, nu = 0, nv = k) : infinite or missing values in 'x'
 names(prin_comp)
+biplot(prin_comp)
+plot(prin_comp)
 
 #svm on whole dataset to predict "readmit"
 library("e1071")
 svm_model <- svm(readmitted ~ ., data=train)
 summary(svm_model)
 
-svm_tune <- tune(svm, train.x=x, train.y=y, 
-                 kernel="radial", ranges=list(cost=10^(-1:2), gamma=c(.5,1,2)))
-
-print(svm_tune)
+#svm_tune <- tune(svm, train.x=x, train.y=y, 
+#                 kernel="radial", ranges=list(cost=10^(-1:2), gamma=c(.5,1,2)))
+#print(svm_tune)
 
 
 """
-Prove the following - maybe show a summary of the variance in all the columns or something:
-Warning message:
-In svm.default(x, y, scale = scale, ..., na.action = na.action) :
-  Variable(s) ‘max_glu_serum’ and ‘chlorpropamide’ and ‘acetohexamide’ and ‘tolbutamide’ and ‘miglitol’ and ‘troglitazone’ and ‘tolazamide’ and ‘examide’ and ‘citoglipton’ and ‘glyburide.metformin’ and ‘glipizide.metformin’ and ‘glimepiride.pioglitazone’ and ‘metformin.rosiglitazone’ and ‘metformin.pioglitazone’ constant. Cannot scale data.
-
-
-
 #This is the old split approach I took, saving here for now.
 
 require(caTools)
