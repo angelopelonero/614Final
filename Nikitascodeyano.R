@@ -1,6 +1,12 @@
 setwd("~/Documents/USF/HS614/DiabData")
 data <- read.csv("diabetic_data.csv", na.strings = "?")
-head(data[, 1:6])
+
+head(data)
+
+data$weight <- NULL
+
+head(data[, 1:9])
+
 library(caret)
 set.seed(300)
 ############################ Potential Questions to Explore ############################
@@ -93,4 +99,22 @@ a
 #[1] 0.7307692 0.8942308 0.9326923 0.9471154 0.9519231 0.9519231 0.9567308
 #[8] 0.9519231 0.9567308 0.9711538 0.9759615 0.9759615 0.9903846
 plot(3:15,a)
+
+
+#here's PCA just haphasardly done before a split - just want to see it running.
+
+
+prin_comp <- prcomp(data) 
+names(prin_comp)
+
+#outputs the mean of variables
+prin_comp$center
+
+#outputs the standard deviation of variables
+prin_comp$scale
+
+prin_comp$rotation
+
+biplot(prin_comp, scale = 0)
+
 
