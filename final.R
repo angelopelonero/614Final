@@ -47,6 +47,13 @@ colnames(train)
 # Pair-plotting and guesswork may be too cumbersome in this instance
 
 prin_comp <- prcomp(na.omit(train), center = TRUE, scale = TRUE) # throws error if NAs in data: Error in svd(x, nu = 0, nv = k) : infinite or missing values in 'x'
+library(devtools)
+install_github('sinhrks/ggfortify')
+library(ggfortify); library(ggplot2)
+autoplot(prcomp(na.omit(train), center = TRUE, scale = TRUE), colour = 'readmitted')
+
+colnames(train)
+
 names(prin_comp)
 biplot(prin_comp)
 plot(prin_comp)
