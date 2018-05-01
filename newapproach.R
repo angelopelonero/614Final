@@ -23,12 +23,16 @@ summary(data2)
 ### Split quant and qualitatve here
 
 quant_data <- dplyr::select_if(data2, is.numeric)
-  qual_data <- dplyr::select_if(data2, is.factor)
+qual_data <- dplyr::select_if(data2, is.factor)
 
 ### Use PCA to generate features to merge with those qual features selected via random forests 
 
 prin_comp <- prcomp(na.omit(quant_data), center = TRUE, scale = TRUE)
 names(prin_comp)
+
+library(devtools); library(ggfortify); library(ggplot2)
+plot(prin_comp)
+biplot(prin_comp)
 
 ### Clean categorical data here, then run random forest to figure out which features are most important
 
