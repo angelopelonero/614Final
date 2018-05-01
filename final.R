@@ -53,6 +53,9 @@ test  <- data3[-data4, ]
 ### Therefore PCA will be used to determine important ML features
 ### Pair-plotting and guesswork may be too cumbersome in this instance
 
+### run pca only on quant variables - take those out of the data and do it seperately
+### use random forests on categorical variables
+
 prin_comp <- prcomp(na.omit(train), center = TRUE, scale = TRUE)
 names(prin_comp)
 
@@ -72,6 +75,8 @@ library("e1071")
 svm_model <- svm(readmitted ~ ., data=train)
 summary(svm_model)
 
+predict(svm_model)
+
 #svm_tune <- tune(svm, train.x=x, train.y=y, 
 #                 kernel="radial", ranges=list(cost=10^(-1:2), gamma=c(.5,1,2)))
 #print(svm_tune)
@@ -79,6 +84,14 @@ summary(svm_model)
 # glm model run here:
 
 help(glm)
+
+
+### Find ANY readmission or select one group or another, like <30days or something idk
+### Rebalance your dataset if you have great sensitivity and accuracy but poor specificity
+### bagging if you have good classifiers (random forests do so via decision trees)
+### boosting (similar to bagging, but you're doing every bootstrap instance in parallel (like 1000 bootstrap pieces instead or running them sequentially)
+### so if you have a classifier that is 50/50 this ain't gonna help. 65% positivemight be able to be helped by boosting
+
 
 """
 #This is the old split approach I took, saving here for now.
