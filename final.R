@@ -69,6 +69,7 @@ plot(prin_comp)
 
 ### from the documentation, we know that weight, payer_code, and medical_specialty have large amounts of missing data
 ### those columns may be removed here if they were shown to be unimportant via PCA
+### use clustering to determine readmit of not... k=2??
 
 ### svm on whole dataset to predict "readmit"
 library("e1071")
