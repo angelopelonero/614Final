@@ -1,5 +1,5 @@
 ### read in data, gets rid of NAs (in this data, an NA is noted by "?")
-setwd("~/Documents/USF/HS614/DiabData")
+setwd("~/HS614_Final")
 library(caret)
 library(DataCombine)
 library(onehot)
