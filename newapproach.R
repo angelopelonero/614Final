@@ -5,6 +5,7 @@ library(DataCombine)
 library(onehot)
 library(devtools); library(ggfortify); library(ggplot2)
 library(randomForest)
+library(qdapTools)
 
 data1 <- read.csv("diabetic_data.csv", na.strings = "?")
 data2 <- data1
@@ -21,10 +22,13 @@ colnames(data2)
 data2 <- data2[ ,-nearZeroVar(data2)]
 colnames(data2)
 
+# Drop columns with >50% NA values:
 
 data2$weight <-NULL
 data2$payer_code <- NULL
 data2$medical_specialty <- NULL
+
+# Drop rows with NA values for any remaining column (this sees a loss of ~4.7% of rows, not bad)
 data2 <- na.omit(data2)
 summary(data2)
 
@@ -34,14 +38,18 @@ quant_data <- dplyr::select_if(data2, is.numeric)
 qual_data <- dplyr::select_if(data2, is.factor)
 
 ### Clean categorical data here, then run random forest to figure out which features are most important
+### Creation of dummy variables from nominal vars - is this the right spot to do this?
 
-### Onehot encoding of nominal vars - I don't quite get this yet
+dmy <- dummyVars(" ~ .", data = qual_data)
+dmyframe <- data.frame(predict(dmy, newdata = qual_data))
+summary(dmyframe)
 
 #qual_data <- onehot(qual_data)
 
 ### Random forest feature selection here:
 
-forestation <- randomForest(formula = readmitted ~ ., data = qual_data, importance = TRUE)
+forestation <- randomForest(formula = readmitted..30 ~ ., data = dmyframe, importance = TRUE, ntree=5)
+getTree(forestation)
 
 ### Use PCA to generate features to merge with those qual features selected via random forests 
 
@@ -59,12 +67,28 @@ plot(prin_comp)
 custom_data <- cbind(qual_data,prin_comp$x[,1:2])
 
 ### now let's try to predict stuff
-
-
-
 ### Train/test split
-
 
 data3 <- createDataPartition(data2$readmitted, p = .8, list = FALSE, times = 1)
 train <- data2[data3, ]
 test  <- data2[-data3, ]
+
+### Clustering should go here:
+### Try K-means for 2 and 3 clusters (k = 2 = readmit no or >30 vs. <30, k = 3 = predict all values)
+
+### And don't forget agglomerative clustering:
+### Do I need to scale this data? probably not, but know how to do it for the final
+
+### Plot historgrams for each of the features you selected, hue by class:
+
+### Running a linear model:
+
+### QC for linear model
+
+### Running an SVM
+
+### QC for SVM (ROC Curve)
+
+### Show sensitivity,specificity,accuracy,F1,AUC, etc.
+
+### Decide which model is bnest
