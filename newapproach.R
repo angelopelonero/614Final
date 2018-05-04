@@ -6,6 +6,8 @@ library(onehot)
 library(devtools); library(ggfortify); library(ggplot2)
 library(randomForest)
 library(qdapTools)
+### lightweight deep learning library, give it a shot:
+library(monmlp)
 
 data1 <- read.csv("diabetic_data.csv", na.strings = "?")
 data2 <- data1
@@ -36,6 +38,13 @@ summary(data2)
 
 quant_data <- dplyr::select_if(data2, is.numeric)
 qual_data <- dplyr::select_if(data2, is.factor)
+dmyframe <- qual_data
+
+dmyframe$diag_1 <- NULL
+
+dmyframe$diag_2 <- NULL
+
+dmyframe$diag_3 <- NULL
 
 ### Clean categorical data here, then run random forest to figure out which features are most important
 ### Creation of dummy variables from nominal vars - is this the right spot to do this?
@@ -48,8 +57,10 @@ summary(dmyframe)
 
 ### Random forest feature selection here:
 
-forestation <- randomForest(formula = readmitted..30 ~ ., data = dmyframe, importance = TRUE, ntree=5)
+forestation <- randomForest(formula = readmitted ~ ., data = dmyframe, importance = TRUE, ntree=500)
 getTree(forestation)
+yep <- predict(forestation, dmyframe)
+plot(yep)
 
 ### Use PCA to generate features to merge with those qual features selected via random forests 
 
@@ -73,8 +84,14 @@ data3 <- createDataPartition(data2$readmitted, p = .8, list = FALSE, times = 1)
 train <- data2[data3, ]
 test  <- data2[-data3, ]
 
+colnames(train)
+
 ### Clustering should go here:
+### Give the tsne package a go here 
 ### Try K-means for 2 and 3 clusters (k = 2 = readmit no or >30 vs. <30, k = 3 = predict all values)
+### https://www.r-bloggers.com/k-means-clustering-in-r/
+
+ggplot(train, aes(num_medications, number_inpatient, color = readmitted)) + geom_point()
 
 ### And don't forget agglomerative clustering:
 ### Do I need to scale this data? probably not, but know how to do it for the final
