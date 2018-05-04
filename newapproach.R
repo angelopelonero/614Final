@@ -1,5 +1,5 @@
 ### read in data, gets rid of NAs (in this data, an NA is noted by "?")
-setwd("~/HS614_Final")
+setwd("~/Documents/USF/HS614/DiabData")
 library(caret)
 library(DataCombine)
 library(onehot)
@@ -91,4 +91,4 @@ test  <- data2[-data3, ]
 
 ### Show sensitivity,specificity,accuracy,F1,AUC, etc.
 
-### Decide which model is bnest
+### Decide which model is best:
